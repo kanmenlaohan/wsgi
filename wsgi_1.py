@@ -19,13 +19,14 @@ def application(environ, start_response):
     import pprint
     pprint.pprint(environ)
 
+    today = datetime.date.today()
     response_body = body.format(
         software=environ.get('SERVER_SOFTWARE', default),
-        path="aaaa",
-        month="bbbb",
-        date="cccc",
-        year="dddd",
-        client_ip="eeee"
+        path=environ.get('PWD', default),
+        month=today.month,
+        date=today.day,
+        year=today.year,
+        client_ip=environ.get('REMOTE_ADDR', default)
     )
     status = '200 OK'
 
@@ -38,5 +39,7 @@ def application(environ, start_response):
 
 if __name__ == '__main__':
     from wsgiref.simple_server import make_server
-    srv = make_server('localhost', 8080, application)
+    srv = make_server('172.16.68.3', 8080, application)
+    print("wsgi server started.")
     srv.serve_forever()
+    print("wsgi server is listening")
